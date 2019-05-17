@@ -6,30 +6,31 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
         pack: 'start',
         align: 'stretch'
     },
+    width: 800,
     initComponent: function () {
         this.items = [
             {
+                title: 'Avalable',
                 xtype: 'columnList',
                 itemId: 'avaliableColumns',
                 store: 'AllColumnsStore',
-                listTemplate: new Ext.XTemplate(
-                    '<tpl>',
-                    '   <div>{name}</div> <button class="add-button">+</button>',
-                    '</tpl>'
-                )
+                tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                    button: '<button class="add-item-button">+</button>'
+
+                })
             },
             {
+                title: 'Selected',
                 xtype: 'columnList',
                 itemId: 'selectedColumns',
                 store: 'SelectedColumnsStore',
-                listTemplate: new Ext.XTemplate(
-                    '<tpl>',
-                    '   <div>{name}</div> <button class="close-button">x</button>',
-                    '</tpl>'
-                )
+                tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                    button: '<button class="remove-item-button">x</button>'
+                })
             }
         ];
         this.callParent(arguments);
+
     }
 
 });
