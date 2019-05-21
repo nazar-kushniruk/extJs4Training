@@ -2,9 +2,14 @@ Ext.define('tableWieveExtJs.store.SelectedColumnsStore', {
     extend: 'Ext.data.Store',
     storeId: 'SelectedColumnsStore',
     model: 'tableWieveExtJs.model.ColumnModel',
-    // data:  ["id",  "name",  "username",  "email",  "phone", "viber"]
-    proxy: {
-        type: 'localstorage',
-        id: 'twitter-Searches'
+    //autoSync: true,
+    data: [],
+
+    getSelectedColumns :  function () {
+        var data = localStorage.getItem('selected') || null;
+        if (data) {
+            this.add(JSON.parse(data));
+        }
+        this.add([]);
     }
 });

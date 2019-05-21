@@ -10,6 +10,9 @@ Ext.define('tableWieveExtJs.controller.TableController', {
             this.control({
                 '#configureColumns': {
                     click: this.onConfigureColumnsClick
+                },
+                'userstable': {
+                    beforerender: this.onUserTableRender
                 }
             });
         },
@@ -17,10 +20,15 @@ Ext.define('tableWieveExtJs.controller.TableController', {
         onConfigureColumnsClick: function (button) {
             var grid = button.up('userstable').down('usergrid');
             Ext.create('tableWieveExtJs.view.ColumnSelectionWindow', {
-                onSaveCallback: function(){
+                onSaveCallback: function () {
                     grid.updateColumns();
                 }
             }).show();
+        },
+        onUserTableRender: function (view) {
+            Ext.getStore('AllColumnsStore').getAllColumns();
+            Ext.getStore('SelectedColumnsStore').getSelectedColumns();
+            Ext.getStore('AvailableColumnsStore').getData();
         }
     }
 );

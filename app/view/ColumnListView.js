@@ -3,9 +3,10 @@ Ext.define('tableWieveExtJs.view.ColumnListView', {
         alias: 'widget.columnList',
         width: 250,
         height: 500,
+        backgroundColor: 'white',
         border:1,
         itemSelector: 'div.list-item',
-        emptyText: 'No images available',
+        emptyText: 'No columns selected',
 
         /*initComponent: function () {
             var me = this;
@@ -18,3 +19,4 @@ Ext.define('tableWieveExtJs.view.ColumnListView', {
     }
 );
 
+``

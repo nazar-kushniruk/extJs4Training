@@ -6,31 +6,98 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
         pack: 'start',
         align: 'stretch'
     },
-    width: 800,
+
     initComponent: function () {
+        var me = this;
         this.items = [
             {
-                title: 'Avalable',
-                xtype: 'columnList',
-                itemId: 'avaliableColumns',
-                store: 'AllColumnsStore',
-                tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
-                    button: '<button class="add-item-button">+</button>'
+                xtype: 'container',
+                padding: 10,
+                items: [
+                    {
+                    xtype: 'component',
+                    html: 'Avalaible',
+                    cls: 'list-title'
+                    },
+                    {
+                        xtype: 'textfield',
+                        fieldLabel: 'Search',
+                        id: 'searchField',
+                        width: 250
+                    },
 
-                })
+                    {
+                        xtype: 'columnList',
+                        itemId: 'avaliableColumns',
+                        store: "AvailableColumnsStore",
+                        // getSearchFilterFn: function(record){
+                        //     return record.get('name') !== 'name';
+                        // },
+                        /* store: Ext.create('Ext.data.Store', {
+                             storeId: 'Z',
+                             selectedItems: [],
+                             model: 'tableWieveExtJs.model.ColumnModel',
+                             data: me.a(),
+                             filters: me.getAvStoreFilters()
+                         }),*/
+                        cls: 'list-container',
+
+                        tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                            button: '<div class="button-container"><div class="add-button">+</div></div>'
+                        })
+                    }
+                ]
             },
             {
-                title: 'Selected',
-                xtype: 'columnList',
-                itemId: 'selectedColumns',
-                store: 'SelectedColumnsStore',
-                tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
-                    button: '<button class="remove-item-button">x</button>'
-                })
+                xtype: 'container',
+                padding: 10,
+                items: [
+                    {
+                        xtype: 'component',
+                        html: 'Selected',
+                        cls: 'list-title'
+                    },
+                    {
+                        xtype: 'columnList',
+                        itemId: 'selectedColumns',
+                        store: 'SelectedColumnsStore',
+                        height: 527,
+                        tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                            button: '<div class="button-container"><div class="remove-button">x</div></div>'
+                        }),
+                        cls: 'list-container'
+                    }
+                ]
             }
+
         ];
         this.callParent(arguments);
 
+    },
+
+    a: function () {
+        var data = Ext.getStore('AllColumnsStore').getRange().map(a => a.getData());
+        return data;
+    },
+
+    getAvStoreFilters: function () {
+        return [
+            Ext.create('Ext.util.Filter', {
+                filterFn: function (record) {
+                    console.log('filter1');
+                    return !Ext.getStore('SelectedColumnsStore').getRange().map(function (record) {
+                        return record.get('id');
+                    }).includes(record.get('id'));
+                }
+            }),
+
+            // Ext.create('Ext.util.Filter', {
+            //     filterFn: function (record) {
+            //         console.log('filter query');
+            //         return record.get('name').includes('name');
+            //     }
+            // })
+        ];
     }
 
 });
