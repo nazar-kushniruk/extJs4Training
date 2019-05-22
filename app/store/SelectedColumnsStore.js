@@ -1,15 +1,35 @@
 Ext.define('tableWieveExtJs.store.SelectedColumnsStore', {
     extend: 'Ext.data.Store',
     storeId: 'SelectedColumnsStore',
+    /*id:'SelectedColumnsStore',*/
     model: 'tableWieveExtJs.model.ColumnModel',
     //autoSync: true,
     data: [],
+    proxy: {
+        type: 'localstorage',
+        id: 'selected'
+    },
 
-    getSelectedColumns :  function () {
+    listeners: {
+        update: function () {
+            console.log('data changed');
+        },
+        datachanged: function () {
+            console.log('data changed');
+        },
+    },
+    getSelectedColumns: function () {
+        var data = this.getStorageData();
+
+        data.length && this.add(data);
+    },
+
+    getStorageData: function () {
         var data = localStorage.getItem('selected') || null;
         if (data) {
-            this.add(JSON.parse(data));
+            return JSON.parse(data)
         }
-        this.add([]);
-    }
+
+        return [];
+    },
 });

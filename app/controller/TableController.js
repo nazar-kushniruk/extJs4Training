@@ -1,6 +1,6 @@
 Ext.define('tableWieveExtJs.controller.TableController', {
         extend: 'Ext.app.Controller',
-        stores: ['TableStore', 'AllColumnsStore'],
+        stores: ['TableStore', 'AllColumnsStore', 'TestStore'],
         views: [
             'TableView',
             'HeaderView',
@@ -27,7 +27,8 @@ Ext.define('tableWieveExtJs.controller.TableController', {
         },
         onUserTableRender: function (view) {
             Ext.getStore('AllColumnsStore').getAllColumns();
-            Ext.getStore('SelectedColumnsStore').getSelectedColumns();
+            // Ext.getStore('SelectedColumnsStore').getSelectedColumns();
+            Ext.getStore('SelectedColumnsStore').load();
             Ext.getStore('AvailableColumnsStore').getData();
         }
     }

@@ -17,7 +17,7 @@ Ext.define('tableWieveExtJs.store.AvailableColumnsStore', {
                 var store = record.store,
                     searchQuery = store.searchQuery;
 
-                return searchQuery?  record.get('name').includes(searchQuery): true;
+                return searchQuery ? record.get('name').includes(searchQuery) : true;
             }
         })
     ],
@@ -48,7 +48,8 @@ Ext.define('tableWieveExtJs.store.AvailableColumnsStore', {
             //     }
             // })
         ];
-    }
+    },
+
 
 });
 
