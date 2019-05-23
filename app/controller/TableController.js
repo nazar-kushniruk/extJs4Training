@@ -26,9 +26,9 @@ Ext.define('tableWieveExtJs.controller.TableController', {
             }).show();
         },
         onUserTableRender: function (view) {
-            Ext.getStore('AllColumnsStore').getAllColumns();
-            // Ext.getStore('SelectedColumnsStore').getSelectedColumns();
-            Ext.getStore('SelectedColumnsStore').load();
+           // Ext.getStore('AllColumnsStore').getAllColumns();
+           //  Ext.getStore('SelectedColumnsStore').getSelectedColumns();
+           //  Ext.getStore('SelectedColumnsStore').load();
             Ext.getStore('AvailableColumnsStore').getData();
         }
     }

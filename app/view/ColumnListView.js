@@ -18,5 +18,3 @@ Ext.define('tableWieveExtJs.view.ColumnListView', {
         }*/
     }
 );
-
-``

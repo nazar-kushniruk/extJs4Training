@@ -62,11 +62,15 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionController', {
 
     availableColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('add-button')) {
+
             console.log('record-> ', record);
             var selectedColumnsStore = Ext.getStore('SelectedColumnsStore'),
                 availableColumnsStore = Ext.getStore('AvailableColumnsStore');
+            console.log('availableColumnsClick record',record);
+          // delete record.data.uid;
+            selectedColumnsStore.add(record.data);
+           // selectedColumnsStore.save();
 
-            selectedColumnsStore.add(record);
             availableColumnsStore.filter();
         }
     },

@@ -3,33 +3,52 @@ Ext.define('tableWieveExtJs.store.SelectedColumnsStore', {
     storeId: 'SelectedColumnsStore',
     /*id:'SelectedColumnsStore',*/
     model: 'tableWieveExtJs.model.ColumnModel',
-    //autoSync: true,
-    data: [],
+    autoSync: true,
+    autoLoad: true,
+    //data: [],
     proxy: {
         type: 'localstorage',
         id: 'selected'
     },
 
     listeners: {
-        update: function () {
-            console.log('data changed');
+        load: function (store, records) {
+           /* if (!records.length) {
+                store.add
+                ({id:1,  name: "id"});
+
+                // store.sync();
+                console.log('SelectedColumnsStore add')
+            }*/
+            Ext.getStore('AvailableColumnsStore').filter();
+        },
+
+        update: function (me, record, operation, modifiedFieldNames, eOpts) {
+           // me.add(record).save();
+            console.log(' update data changed arguments', arguments);
         },
         datachanged: function () {
-            console.log('data changed');
+            console.log('datachanged data changed');
         },
     },
-    getSelectedColumns: function () {
+   /* getSelectedColumns: function () {
         var data = this.getStorageData();
-
         data.length && this.add(data);
-    },
+    },*/
 
     getStorageData: function () {
+       // var data = localStorage.getItem('selected').split(',') || null;
         var data = localStorage.getItem('selected') || null;
-        if (data) {
-            return JSON.parse(data)
+        console.log('!!!!data !!!',data ? data.length : '----');
+        var dataArr = [];
+        data ? data.split(',').map( function(item) {
+           dataArr.push( localStorage.getItem(`selected_${item}`))
+        }) : [];
+        console.log('!!!!data !!!',dataArr ? dataArr : '====');
+      /*  if (data) {
+            return JSON.parse(data).length
         }
 
-        return [];
+        return 0;*/
     },
 });

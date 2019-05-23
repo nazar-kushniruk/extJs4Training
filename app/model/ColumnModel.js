@@ -1,10 +1,9 @@
 Ext.define('tableWieveExtJs.model.ColumnModel', {
     extend: 'Ext.data.Model',
+    idProperty: 'uid',
     fields: [{name: 'id' },
-             {name: 'name'}]/*,
+             {name: 'name'},
+             {name: 'uid'}],
+    idgen: 'sequential'
 
-    proxy: {
-        type: 'localstorage',
-        id: 'selected-columns'
-    }*/
 });

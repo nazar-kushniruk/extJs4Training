@@ -34,11 +34,14 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
         console.log('onSelectedStoreChange work');
         var button = this.getConfirmButton(),
             selectedColumnsStore = Ext.getStore('SelectedColumnsStore');
+            selectedColumnsStore = Ext.getStore('SelectedColumnsStore');
+
         if (button && button.rendered) {
-            var needToDisableButton = !selectedColumnsStore.getCount()
+            selectedColumnsStore.getStorageData();
+            /*var needToDisableButton = !selectedColumnsStore.getCount()
                 || Ext.Array.equals(selectedColumnsStore.getStorageData().map(a => a.id).sort(),
                     selectedColumnsStore.getRange().map(a => a.get('id')).sort());
-            button.setDisabled(needToDisableButton);
+            button.setDisabled(needToDisableButton);*/
         }
     },
     onConfirmButtonClick : function () {
