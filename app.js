@@ -4,7 +4,7 @@ Ext.application({
         'ColumnSelectionController',
         'ColumnSelectionController',
         'ColumnSelectionWindowController'],
-    views: ['ColumnSelectionWindow'],
+   /* views: ['ColumnSelectionWindow'],*/
     requires: ['tableWieveExtJs.Constants', 'tableWieveExtJs.Functions'],
     launch: function () {
 

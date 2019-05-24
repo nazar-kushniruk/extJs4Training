@@ -4,15 +4,15 @@ Ext.define('tableWieveExtJs.store.TableStore', {
      autoLoad: true,
         proxy: {
          type: 'ajax',
-        // url: 'users1.json',
-         api: {
+         url: 'data/users.json'
+       /*  api: {
              read: 'data/users.json',
              update: 'data/updateUsers.json'
-         },
-         reader: {
+         }*///,
+       /*  reader: {
              type: 'json',
              root: 'users',
              successProperty: 'success'
-         }
+         }*/
      }
  });

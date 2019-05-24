@@ -9,16 +9,19 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
     refs: [{
         ref: 'confirmButton',
         selector: 'button#confirmButton'
-    }],
+    },
+        {
+            ref: 'myTable',
+            selector: '#usergridId'
+        }
+    ],
     buttonAddDisabled: true,
     buttonAddRendered: false,
     init() {
         this.listen({
                 store: {
-                    '#SelectedColumnsStore': {
+                    '#SelectedStore': {
                         datachanged: this.onSelectedStoreChange
-                        /* add: this.onSelectedStoreChange,
-                         scope: this*/
                     }
                 },
                 component: {
@@ -31,21 +34,26 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
     },
 
     onSelectedStoreChange: function () {
-        console.log('onSelectedStoreChange work');
         var button = this.getConfirmButton(),
-            selectedColumnsStore = Ext.getStore('SelectedColumnsStore');
-            selectedColumnsStore = Ext.getStore('SelectedColumnsStore');
+            localStorageSelectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i),
+            selectedColumnsStoreNowData = Ext.getStore('SelectedStore')
 
         if (button && button.rendered) {
-            selectedColumnsStore.getStorageData();
-            /*var needToDisableButton = !selectedColumnsStore.getCount()
-                || Ext.Array.equals(selectedColumnsStore.getStorageData().map(a => a.id).sort(),
-                    selectedColumnsStore.getRange().map(a => a.get('id')).sort());
-            button.setDisabled(needToDisableButton);*/
+            var needToDisableButton = !selectedColumnsStoreNowData.getCount() ||
+                Ext.Array.equals(localStorageSelectedColumns.sort(),
+                    selectedColumnsStoreNowData.getRange().map(a => a.get('id')).sort());
+            button.setDisabled(needToDisableButton);
         }
     },
-    onConfirmButtonClick : function () {
-        console.log('onConfirmButtonClick work');
+    onConfirmButtonClick : function (me) {
+        console.log('onConfirmButtonClick work', me);
+        var localStorageSelectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
+        localStorage.setItem('selectedColumns',  Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort());
+        var button = this.getConfirmButton();
+        var myTable = this.getMyTable();
+        console.log('myTable', myTable.getView());
+       myTable.updateCol();
+        button.up().up().close();
     }
 
 });

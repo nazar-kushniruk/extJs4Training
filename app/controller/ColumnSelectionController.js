@@ -15,6 +15,9 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionController', {
                 itemclick: this.selectedColumnsClick
             },
             '#avaliableColumns': {
+                beforerender: function(){
+                    Ext.getStore('AvailableStore').filter();
+                },
                 itemclick: this.availableColumnsClick
             },
             '#searchField' : {
@@ -51,32 +54,28 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionController', {
     },
     selectedColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('remove-button')) {
-            var selectedColumnsStore = Ext.getStore('SelectedColumnsStore'),
-                availableColumnsStore = Ext.getStore('AvailableColumnsStore');
+            var selectedColumnsStore = Ext.getStore('SelectedStore'),
+                availableColumnsStore = Ext.getStore('AvailableStore');
+
 
             selectedColumnsStore.remove(record);
             availableColumnsStore.filter();
         }
-
     },
 
     availableColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('add-button')) {
+            var selectedColumnsStore = Ext.getStore('SelectedStore'),
+                availableColumnsStore = Ext.getStore('AvailableStore');
 
-            console.log('record-> ', record);
-            var selectedColumnsStore = Ext.getStore('SelectedColumnsStore'),
-                availableColumnsStore = Ext.getStore('AvailableColumnsStore');
-            console.log('availableColumnsClick record',record);
-          // delete record.data.uid;
-            selectedColumnsStore.add(record.data);
-           // selectedColumnsStore.save();
-
+            selectedColumnsStore.add(record);
             availableColumnsStore.filter();
         }
     },
     searchFieldChange: function (my, newValue, oldValue) {
-        var availableColumnsStore = Ext.getStore('AvailableColumnsStore');
+        var availableColumnsStore = Ext.getStore('AvailableStore');
         availableColumnsStore.searchQuery = newValue;
+        console.log(' availableColumnsStore.searchQuery',  availableColumnsStore.searchQuery);
         availableColumnsStore.filter();
 
     }

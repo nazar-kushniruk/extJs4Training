@@ -24,10 +24,7 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionWindow', {
                 xtype: 'button',
                 text: 'Selected',
                 itemId: 'confirmButton',
-                disabled: true,
-                handler: function (a) {
-                    console.log('storedColumns-> ', this.up().up());
-                }
+                disabled: true
             }];
         this.callParent(arguments);
     }
