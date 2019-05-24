@@ -15,8 +15,6 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
             selector: '#usergridId'
         }
     ],
-    buttonAddDisabled: true,
-    buttonAddRendered: false,
     init() {
         this.listen({
                 store: {
@@ -45,15 +43,13 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
             button.setDisabled(needToDisableButton);
         }
     },
-    onConfirmButtonClick : function (me) {
-        console.log('onConfirmButtonClick work', me);
+    onConfirmButtonClick: function (me) {
         var localStorageSelectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
-        localStorage.setItem('selectedColumns',  Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort());
+        localStorage.setItem('selectedColumns', Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort());
         var button = this.getConfirmButton();
         var myTable = this.getMyTable();
-        console.log('myTable', myTable.getView());
-       myTable.updateCol();
-        button.up().up().close();
+        myTable.updateCol();
+        button.up('#selectionwindowId').close();
     }
 
 });

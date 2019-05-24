@@ -34,11 +34,11 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
                             selectedItems: [],
                             searchQuery: "",
                             model: 'tableWieveExtJs.model.ColumnModel',
-                            data: Ext.getStore('AllColumnsStore').getRange().map(record=>record.getData()),
+                            data: Ext.getStore('AllColumnsStore').getRange().map(record => record.getData()),
                             filters: [
                                 Ext.create('Ext.util.Filter', {
                                     filterFn: function (record) {
-                                        return !Ext.getStore('SelectedStore').getRange().some(function(selectedRecord){
+                                        return !Ext.getStore('SelectedStore').getRange().some(function (selectedRecord) {
                                             return selectedRecord.get('id') === record.get('id');
                                         });
                                     }
@@ -47,8 +47,6 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
                                     filterFn: function (record) {
                                         var store = record.store,
                                             searchQuery = store.searchQuery;
-                                        console.log('AvailableColumnsStore from filter record.store,', record.store);
-                                        /*  console.log('AvailableColumnsStore Filter2 record', record);*/
                                         return searchQuery ? record.get('name').includes(searchQuery) : true;
                                     }
                                 })
@@ -96,16 +94,10 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
 
     },
 
-    a: function () {
-        var data = Ext.getStore('AllColumnsStore').getRange().map(a => a.getData());
-        return data;
-    },
-
     getAvStoreFilters: function (toggle) {
         return [
             Ext.create('Ext.util.Filter', {
                 filterFn: function (record) {
-                    console.log('filter1');
                     return toggle ? !Ext.getStore('SelectedStore').getRange().map(function (record) {
                         return record.get('id');
                     }).includes(record.get('id')) : !Ext.getStore('AvailableStore').getRange().map(function (record) {
@@ -120,26 +112,24 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
         var selectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
         if (selectedColumns) {
             return Ext.getStore('AllColumnsStore').getRange().filter(function (i) {
-                console.log(i.get('id'), selectedColumns.includes(i.get('id')));
                 return selectedColumns.includes(i.get('id'));
-            }).map(r=>r.getData());
+            }).map(r => r.getData());
         }
 
-        return  [];
+        return [];
     },
 
     getAvalaibleColumns: function () {
         var selectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
         if (selectedColumns) {
             return Ext.getStore('AllColumnsStore').getRange().filter(function (i) {
-                console.log(i.get('id'), selectedColumns.includes(i.get('id')));
                 return !selectedColumns.includes(i.get('id'))
-            }).map(record=>record.getData())
+            }).map(record => record.getData())
         }
     },
 
 
-     //to-do
+    // TODO:
     // z : function(){
     //
     //     var data =  Ext.getStore('AllColumnsStore').getRange().map(r=>r.getData());

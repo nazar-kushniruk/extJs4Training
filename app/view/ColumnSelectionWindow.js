@@ -11,21 +11,21 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionWindow', {
                 xtype: 'columnselectionview'
             }
 
-        ],
+        ];
 
-            this.bbar = ['->', {
-                xtype: 'button',
-                text: 'Close',
-                handler: function () {
-                    this.up('selectionwindow').close();
+        this.bbar = ['->', {
+            xtype: 'button',
+            text: 'Close',
+            handler: function () {
+                this.up('selectionwindow').close();
 
-                }
-            }, {
-                xtype: 'button',
-                text: 'Selected',
-                itemId: 'confirmButton',
-                disabled: true
-            }];
+            }
+        }, {
+            xtype: 'button',
+            text: 'Selected',
+            itemId: 'confirmButton',
+            disabled: true
+        }];
         this.callParent(arguments);
     }
 
