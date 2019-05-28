@@ -1,49 +1,47 @@
 Ext.define('tableWieveExtJs.controller.ColumnSelectionController', {
     extend: 'Ext.app.Controller',
-    stores: ['TableStore',
-        'AllColumnsStore'],
+    stores: ['TableStore', 'AllColumnsStore'],
     views: [
         'ColumnSelectionWindow',
         'ColumnSelectionView',
         'ColumnListView'
     ],
     init() {
+        this.searchFieldChangeDebounce = Ext.Function.createBuffered(this.searchFieldChange, 150, this);
+
         this.control({
             '#selectedColumns': {
                 itemclick: this.selectedColumnsClick
             },
             '#avaliableColumns': {
-                beforerender: function () {
-                    Ext.getStore('AvailableStore').filter();
-                },
+                beforerender: this.updateAvailableColumnsStore,
                 itemclick: this.availableColumnsClick
             },
             '#searchField': {
-                change: this.searchFieldChange
+                change: this.searchFieldChangeDebounce
             }
         });
-
     },
+
     selectedColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('remove-button')) {
-            var selectedColumnsStore = Ext.getStore('SelectedStore'),
-                availableColumnsStore = Ext.getStore('AvailableStore');
-            selectedColumnsStore.remove(record);
-            availableColumnsStore.filter();
+            Ext.getStore('SelectedStore').remove(record);
+            this.updateAvailableColumnsStore();
         }
     },
 
     availableColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('add-button')) {
-            var selectedColumnsStore = Ext.getStore('SelectedStore'),
-                availableColumnsStore = Ext.getStore('AvailableStore');
-            selectedColumnsStore.add(record);
-            availableColumnsStore.filter();
+            Ext.getStore('SelectedStore').add(record);
+            this.updateAvailableColumnsStore();
         }
     },
-    searchFieldChange: function (my, newValue, oldValue) {
-        var availableColumnsStore = Ext.getStore('AvailableStore');
-        availableColumnsStore.searchQuery = newValue;
-        availableColumnsStore.filter();
+
+    searchFieldChange: function (searchField, newValue) {
+        Ext.getStore('AvailableStore').updateSearchFilterQuery(newValue);
+    },
+
+    updateAvailableColumnsStore: function () {
+        Ext.getStore('AvailableStore').filter();
     }
 });

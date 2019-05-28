@@ -9,137 +9,126 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
 
     initComponent: function () {
         var me = this;
-        this.items = [
-            {
-                xtype: 'container',
-                padding: 10,
-                items: [
-                    {
-                        xtype: 'component',
-                        html: 'Avalaible',
-                        cls: 'list-title'
-                    },
-                    {
-                        xtype: 'textfield',
-                        fieldLabel: 'Search',
-                        id: 'searchField',
-                        width: 250
-                    },
 
-                    {
-                        xtype: 'columnList',
-                        itemId: 'avaliableColumns',
-                        store: Ext.create('Ext.data.Store', {
-                            storeId: 'AvailableStore',
-                            selectedItems: [],
-                            searchQuery: "",
-                            model: 'tableWieveExtJs.model.ColumnModel',
-                            data: Ext.getStore('AllColumnsStore').getRange().map(record => record.getData()),
-                            filters: [
-                                Ext.create('Ext.util.Filter', {
-                                    filterFn: function (record) {
-                                        return !Ext.getStore('SelectedStore').getRange().some(function (selectedRecord) {
-                                            return selectedRecord.get('id') === record.get('id');
-                                        });
-                                    }
-                                }),
-                                Ext.create('Ext.util.Filter', {
-                                    filterFn: function (record) {
-                                        var store = record.store,
-                                            searchQuery = store.searchQuery;
-                                        return searchQuery ? record.get('name').includes(searchQuery) : true;
-                                    }
-                                })
+        Ext.apply(me, {
+            items: [
+                me.buildAvailableColumns(),
+                me.buildSelectedColumns()
+            ]
+        });
 
-                            ]
-
-                        }),
-                        cls: 'list-container',
-
-                        tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
-                            button: '<div class="button-container"><div class="add-button">+</div></div>'
-                        })
-                    }
-                ]
-            },
-            {
-                xtype: 'container',
-                padding: 10,
-                items: [
-                    {
-                        xtype: 'component',
-                        html: 'Selected',
-                        cls: 'list-title'
-                    },
-                    {
-                        xtype: 'columnList',
-                        itemId: 'selectedColumns',
-                        store: Ext.create('Ext.data.Store', {
-                            storeId: 'SelectedStore',
-                            model: 'tableWieveExtJs.model.ColumnModel',
-                            data: me.getSelectedColumns(),
-                            filters: me.getAvStoreFilters(false)
-                        }),
-                        height: 527,
-                        tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
-                            button: '<div class="button-container"><div class="remove-button">x</div></div>'
-                        }),
-                        cls: 'list-container'
-                    }
-                ]
-            }
-
-        ];
-        this.callParent(arguments);
-
-    },
-
-    getAvStoreFilters: function (toggle) {
-        return [
-            Ext.create('Ext.util.Filter', {
-                filterFn: function (record) {
-                    return toggle ? !Ext.getStore('SelectedStore').getRange().map(function (record) {
-                        return record.get('id');
-                    }).includes(record.get('id')) : !Ext.getStore('AvailableStore').getRange().map(function (record) {
-                        return record.get('id');
-                    }).includes(record.get('id'));
-                }
-            })
-        ];
+        me.callParent(arguments);
     },
 
     getSelectedColumns: function () {
-        var selectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
-        if (selectedColumns) {
+        var selectedColumnsIds = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
+
+        if (selectedColumnsIds.length) {
             return Ext.getStore('AllColumnsStore').getRange().filter(function (i) {
-                return selectedColumns.includes(i.get('id'));
+                return selectedColumnsIds.includes(i.get('id'));
             }).map(r => r.getData());
+            // refactor to reduce
         }
 
         return [];
+
+        // return Ext.getStore('AllColumnsStore').getRange().reduce();
     },
 
-    getAvalaibleColumns: function () {
-        var selectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
-        if (selectedColumns) {
-            return Ext.getStore('AllColumnsStore').getRange().filter(function (i) {
-                return !selectedColumns.includes(i.get('id'))
-            }).map(record => record.getData())
-        }
+    buildAvailableColumns: function () {
+        return {
+            xtype: 'container',
+            flex: 1,
+            padding: 10,
+            layout: {
+                type: 'vbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    xtype: 'component',
+                    html: 'Avalaible',
+                    cls: 'list-title'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Search',
+                    id: 'searchField'
+                },
+                {
+                    xtype: 'columnList',
+                    flex: 1,
+                    itemId: 'avaliableColumns',
+                    store: Ext.create('Ext.data.Store', {
+                        storeId: 'AvailableStore',
+                        searchQuery: "",
+                        model: 'tableWieveExtJs.model.ColumnModel',
+                        data: Ext.getStore('AllColumnsStore').getRange().map(record => record.getData()),
+                        filters: [
+                            Ext.create('Ext.util.Filter', {
+                                filterFn: function (record) {
+                                    return !Ext.getStore('SelectedStore').getRange().some(function (selectedRecord) {
+                                        return selectedRecord.get('id') === record.get('id');
+                                    });
+                                }
+                            }),
+                            Ext.create('Ext.util.Filter', {
+                                filterFn: function (record) {
+                                    var searchQuery = record.store.searchQuery;
+                                    return searchQuery ? record.get('name').includes(searchQuery) : true;
+                                }
+                            })
+                        ],
+                        updateSearchFilterQuery: function (queryString) {
+                            this.searchQuery = queryString;
+                            this.filter();
+                        }
+                    }),
+                    cls: 'list-container',
+                    tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                        actionButton: '<div class="button-container"><button class="add-button">+</button></div>'
+                    })
+                }
+            ]
+        };
     },
+    
+    buildSelectedColumns: function () {
+        var me = this;
 
-
-    // TODO:
-    // z : function(){
-    //
-    //     var data =  Ext.getStore('AllColumnsStore').getRange().map(r=>r.getData());
-    //
-    //
-    //     return {
-    //         selected: [],
-    //         available: []
-    //     };
-    // }
-
-
+        return {
+            xtype: 'container',
+            flex: 1,
+            layout: {
+                type: 'vbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            padding: 10,
+            items: [
+                {
+                    xtype: 'component',
+                    html: 'Selected',
+                    cls: 'list-title',
+                    margin: '0 0 27 0'
+                },
+                {
+                    xtype: 'columnList',
+                    flex: 1,
+                    itemId: 'selectedColumns',
+                    store: Ext.create('Ext.data.Store', {
+                        storeId: 'SelectedStore',
+                        model: 'tableWieveExtJs.model.ColumnModel',
+                        data: me.getSelectedColumns()
+                    }),
+                    autoScroll: true,
+                    tpl: Ext.create('tableWieveExtJs.templates.ListTpl', {
+                        actionButton: '<div class="button-container"><div class="remove-button">x</div></div>'
+                    }),
+                    cls: 'list-container'
+                }
+            ]
+        };
+    }
 });

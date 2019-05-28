@@ -4,7 +4,6 @@ Ext.define('tableWieveExtJs.store.TableStore', {
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url: 'data/users.json'
-
+        url: 'https://jsonplaceholder.typicode.com/users'
     }
 });

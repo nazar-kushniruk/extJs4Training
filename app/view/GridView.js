@@ -5,21 +5,34 @@ Ext.define('tableWieveExtJs.view.GridView', {
     title: 'Users',
     store: 'TableStore',
     initComponent: function () {
-        var store = Ext.getStore('AllColumnsStore').load();
-
-        Ext.apply(this, {columns: store.getSelectedColumnForGrid() || []});
+        Ext.apply(this, {
+            columns: this.getColumnsConfiguration()
+        });
 
         this.callParent(arguments);
     },
 
-    updateCol() {
+    updateGridColumns() {
         var me = this;
+
         me.headerCt.removeAll();
-        Ext.getStore('AllColumnsStore').getSelectedColumnForGrid().map(function (i) {
-            me.headerCt.insert(me.columns.length, Ext.create('Ext.grid.column.Column', i));
-        });
+        me.getColumnsConfiguration().forEach(function (i) {
+                me.headerCt.insert(me.columns.length, Ext.create('Ext.grid.column.Column', i));
+            }
+        );
         me.getView().refresh();
+    },
+
+    getColumnsConfiguration() {
+        var store = Ext.getStore('AllColumnsStore').load(),
+            data = store.getSelectedColumnForGrid();
+
+        return data.map(function (item) {
+            return {
+                text: item.name,
+                dataIndex: item.name,
+                flex: 1
+            };
+        });
     }
-
-
 });

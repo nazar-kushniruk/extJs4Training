@@ -1,20 +1,17 @@
 Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
     extend: 'Ext.app.Controller',
     views: [
-        'ColumnSelectionWindow',
         'ColumnSelectionView',
-        'ColumnListView'
+        'ColumnListView',
+        'ColumnSelectionWindow'
     ],
-
-    refs: [{
-        ref: 'confirmButton',
-        selector: 'button#confirmButton'
-    },
+    refs: [
         {
-            ref: 'myTable',
-            selector: '#usergridId'
+            ref: 'confirmButton',
+            selector: 'button#confirmButton'
         }
     ],
+
     init() {
         this.listen({
                 store: {
@@ -28,28 +25,30 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
                     }
                 }
             }
-        )
+        );
     },
 
-    onSelectedStoreChange: function () {
+    onSelectedStoreChange: function (selectedColumnsStore) {
         var button = this.getConfirmButton(),
-            localStorageSelectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i),
-            selectedColumnsStoreNowData = Ext.getStore('SelectedStore')
+            calStorageSelectedColumns = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
         if (button && button.rendered) {
-            var needToDisableButton = !selectedColumnsStoreNowData.getCount() ||
-                Ext.Array.equals(localStorageSelectedColumns.sort(),
-                    selectedColumnsStoreNowData.getRange().map(a => a.get('id')).sort());
+            var needToDisableButton = !selectedColumnsStore.getCount()
+                || Ext.Array.equals(
+                    calStorageSelectedColumns.sort(),
+                    selectedColumnsStore.getRange().map(a => a.get('id')).sort()
+                );
+
             button.setDisabled(needToDisableButton);
         }
     },
-    onConfirmButtonClick: function (me) {
-        var localStorageSelectedColumns = localStorage.getItem('selectedColumns').split(',').map(i => +i);
-        localStorage.setItem('selectedColumns', Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort());
-        var button = this.getConfirmButton();
-        var myTable = this.getMyTable();
-        myTable.updateCol();
-        button.up('#selectionwindowId').close();
-    }
 
+    onConfirmButtonClick: function (button) {
+        var columnSelectionPopup = button.up('#columnSelectionPopup'),
+            selectedColumnsIds = Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort();
+
+        App.LocalStorageTools.setSelectedColumnsToLocalStorage(selectedColumnsIds);
+        columnSelectionPopup.onSaveCallback();
+        columnSelectionPopup.close();
+    }
 });

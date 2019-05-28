@@ -33,7 +33,6 @@
     display: flex;
 }
 
-
 .item-name {
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -48,7 +47,6 @@
     width: 30px;
     display: flex;
     justify-content: center;
-
 }
 
 .add-button,
@@ -69,12 +67,8 @@
 .remove-button:hover {
     background-color: greenyellow;
 }
+
 .list-container {
     background-color: #FFFFFF;
-    overflow: auto;
-}
-.list-title {
-    font-weight: bold;
-    color: #444444;
-    margin-bottom: 10px;
+    /*overflow: auto;*/
 }

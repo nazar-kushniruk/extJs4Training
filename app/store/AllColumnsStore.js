@@ -1,5 +1,4 @@
 Ext.define('tableWieveExtJs.store.AllColumnsStore', {
-
     extend: 'Ext.data.Store',
     storeId: 'AllColumnsStore',
     model: 'tableWieveExtJs.model.ColumnModel',
@@ -9,37 +8,41 @@ Ext.define('tableWieveExtJs.store.AllColumnsStore', {
         id: "add"
     },
     autoLoad: true,
+    requires: ['tableWieveExtJs.LocalStorageTools'],
     listeners: {
+        // todo load data from  https://www.mocky.io/
+        //  "[{"id":1,"name":"id"},{"id":2,"name":"name"},{"id":3,"name":"username"},
+        //  {"id":4,"name":"email"},{"id":5,"name":"phone"},{"id":6,"name":"website"}]"
         load: function (store, records) {
             if (!records.length) {
                 store.add
-                ({id: 1, name: "id"},
+                (
+                    {id: 1, name: "id"},
                     {id: 2, name: "name"},
                     {id: 3, name: "username"},
                     {id: 4, name: "email"},
                     {id: 5, name: "phone"},
-                    {id: 6, name: "website"});
+                    {id: 6, name: "website"},
+                    {id: 21, name: "name 2"},
+                    {id: 32, name: "username 2"},
+                    {id: 42, name: "email 2"},
+                    {id: 53, name: "phone 2"},
+                    {id: 64, name: "website 2"}
+                );
             }
         }
     },
 
     getSelectedColumnForGrid: function () {
+        var dataAll = this.getRange() || [],
+            dataSelected = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
-        var dataAll = this.data.items || null,
-            dataSelected = localStorage.getItem('selectedColumns')
-                .split(',').map(i => +i) || null;
-        if (dataAll && dataSelected) {
-            return dataAll.filter(function (column) {
-                return dataSelected.includes(column.data.id)
-            }).map(function (column) {
-                return {
-                    text: column.data.name,
-                    dataIndex: column.data.name,
-                    flex: 1
-                }
-            })
-        } else {
-            alert("Something went wrong");
+        if (dataAll) {
+            return dataSelected.length ? dataAll.filter(function (record) {
+                return dataSelected.includes(record.get('id'));
+            }).map(r => r.getData()) : dataAll.map(r => r.getData());
         }
+
+        return [];
     }
 });
