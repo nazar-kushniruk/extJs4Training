@@ -38,9 +38,12 @@ Ext.define('tableWieveExtJs.store.AllColumnsStore', {
             dataSelected = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
         if (dataAll) {
-            return dataSelected.length ? dataAll.filter(function (record) {
-                return dataSelected.includes(record.get('id'));
-            }).map(r => r.getData()) : dataAll.map(r => r.getData());
+            return dataSelected.length ? dataAll.reduce(function (selectedColumns, record) {
+                if (dataSelected.includes(record.get('id'))) {
+                    selectedColumns.push(record.getData());
+                }
+                return selectedColumns;
+            }, []) : dataAll.map(record => record.getData());
         }
 
         return [];
