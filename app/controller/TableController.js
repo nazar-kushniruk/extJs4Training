@@ -16,19 +16,37 @@ Ext.define('tableWieveExtJs.controller.TableController', {
     ],
 
     init() {
+        this.listen({
+            store: {
+                '#AllColumnsStore': {
+                    load: this.onAllColumnsStoreLoad
+                }
+            }
+        });
         this.control({
             '#configureColumns': {
                 click: this.onConfigureColumnsClick
             }
         });
+
     },
 
     onConfigureColumnsClick: function () {
         var me = this;
+
         Ext.create('tableWieveExtJs.view.ColumnSelectionWindow', {
             onSaveCallback: function () {
                 me.getUserTable().updateGridColumns();
             }
         });
+    },
+
+    onAllColumnsStoreLoad: function (store, records, successful) {
+        var me = this,
+            grid = me.getUserTable();
+
+        if (successful && grid) {
+            grid.updateGridColumns();
+        }
     }
 });

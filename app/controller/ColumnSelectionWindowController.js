@@ -35,8 +35,8 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
         if (button && button.rendered) {
             var needToDisableButton = !selectedColumnsStore.getCount()
                 || Ext.Array.equals(
-                    calStorageSelectedColumns.sort(),
-                    selectedColumnsStore.getRange().map(a => a.get('id')).sort()
+                    calStorageSelectedColumns,
+                    selectedColumnsStore.getRange().map(a => a.get('id'))
                 );
 
             button.setDisabled(needToDisableButton);
@@ -45,7 +45,7 @@ Ext.define('tableWieveExtJs.controller.ColumnSelectionWindowController', {
 
     onConfirmButtonClick: function (button) {
         var columnSelectionPopup = button.up('#columnSelectionPopup'),
-            selectedColumnsIds = Ext.getStore('SelectedStore').getRange().map(a => a.get('id')).sort();
+            selectedColumnsIds = Ext.getStore('SelectedStore').getRange().map(a => a.get('id'));
 
         App.LocalStorageTools.setSelectedColumnsToLocalStorage(selectedColumnsIds);
         columnSelectionPopup.onSaveCallback();

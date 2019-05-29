@@ -3,49 +3,24 @@ Ext.define('tableWieveExtJs.store.AllColumnsStore', {
     storeId: 'AllColumnsStore',
     model: 'tableWieveExtJs.model.ColumnModel',
     autoSync: true,
+    autoLoad:true,
     proxy: {
-        type: "localstorage",
-        id: "add"
+        type: 'ajax',
+        url: "http://www.mocky.io/v2/5cee4dbd30000095786e9a67"
     },
-    autoLoad: true,
-    requires: ['tableWieveExtJs.LocalStorageTools'],
-    listeners: {
-        // todo load data from  https://www.mocky.io/
-        //  "[{"id":1,"name":"id"},{"id":2,"name":"name"},{"id":3,"name":"username"},
-        //  {"id":4,"name":"email"},{"id":5,"name":"phone"},{"id":6,"name":"website"}]"
-        load: function (store, records) {
-            if (!records.length) {
-                store.add
-                (
-                    {id: 1, name: "id"},
-                    {id: 2, name: "name"},
-                    {id: 3, name: "username"},
-                    {id: 4, name: "email"},
-                    {id: 5, name: "phone"},
-                    {id: 6, name: "website"},
-                    {id: 21, name: "name 2"},
-                    {id: 32, name: "username 2"},
-                    {id: 42, name: "email 2"},
-                    {id: 53, name: "phone 2"},
-                    {id: 64, name: "website 2"}
-                );
-            }
-        }
-    },
-
     getSelectedColumnForGrid: function () {
-        var dataAll = this.getRange() || [],
-            dataSelected = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
+        var allColumns = this.getRange(),
+            selectedColumnsIds = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
-        if (dataAll) {
-            return dataSelected.length ? dataAll.reduce(function (selectedColumns, record) {
-                if (dataSelected.includes(record.get('id'))) {
-                    selectedColumns.push(record.getData());
-                }
-                return selectedColumns;
-            }, []) : dataAll.map(record => record.getData());
-        }
+        return !selectedColumnsIds.length
+            ? allColumns.map(record => record.getData())
+            : selectedColumnsIds.reduce(function (result, id) {
+                var column = allColumns.find(function (record) {
+                    return record.get('id') === id;
+                });
 
-        return [];
+                column && result.push(column.getData());
+                return result;
+            }, []);
     }
 });

@@ -16,16 +16,15 @@ Ext.define('tableWieveExtJs.view.GridView', {
         var me = this;
 
         me.headerCt.removeAll();
-        me.getColumnsConfiguration().forEach(function (i) {
-                me.headerCt.insert(me.columns.length, Ext.create('Ext.grid.column.Column', i));
+        me.getColumnsConfiguration().forEach(function (item , index) {
+                me.headerCt.insert(index, Ext.create('Ext.grid.column.Column', item));
             }
         );
         me.getView().refresh();
     },
 
     getColumnsConfiguration() {
-        var store = Ext.getStore('AllColumnsStore').load(),
-            data = store.getSelectedColumnForGrid();
+        var data = Ext.getStore('AllColumnsStore').getSelectedColumnForGrid();
 
         return data.map(function (item) {
             return {

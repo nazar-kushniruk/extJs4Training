@@ -24,11 +24,14 @@ Ext.define('tableWieveExtJs.view.ColumnSelectionView', {
         var selectedColumnsIds = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
         if (selectedColumnsIds.length) {
+            var allColumnsStoreData = Ext.getStore('AllColumnsStore').getRange();
 
-            return Ext.getStore('AllColumnsStore').getRange().reduce(function (selectedColumns, record) {
-                if (selectedColumnsIds.includes(record.get('id'))) {
-                    selectedColumns.push(record.getData());
-                }
+            return selectedColumnsIds.reduce(function (selectedColumns, id) {
+                var column = allColumnsStoreData.find(function (record) {
+                    return record.get('id') === id;
+                });
+
+                column && selectedColumns.push(column);
                 return selectedColumns;
             }, []);
         }
