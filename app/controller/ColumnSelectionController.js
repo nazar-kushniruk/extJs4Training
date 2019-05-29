@@ -1,83 +1,47 @@
 Ext.define('tableWieveExtJs.controller.ColumnSelectionController', {
     extend: 'Ext.app.Controller',
-    stores: ['TableStore',
-        'AllColumnsStore',
-        'SelectedColumnsStore',
-        'AvailableColumnsStore'],
+    stores: ['TableStore', 'AllColumnsStore'],
     views: [
         'ColumnSelectionWindow',
         'ColumnSelectionView',
         'ColumnListView'
     ],
     init() {
+        this.searchFieldChangeDebounce = Ext.Function.createBuffered(this.searchFieldChange, 150, this);
+
         this.control({
             '#selectedColumns': {
                 itemclick: this.selectedColumnsClick
             },
             '#avaliableColumns': {
+                beforerender: this.updateAvailableColumnsStore,
                 itemclick: this.availableColumnsClick
             },
-            '#searchField' : {
-                change: this.searchFieldChange
+            '#searchField': {
+                change: this.searchFieldChangeDebounce
             }
         });
-        /*  var data =   [
-              {name: 'id'},
-              {name: 'name'},
-              {name: 'username'},
-              {name: 'email'},
-              {name: 'phone'},
-              {name: 'viber'}
-          ] ;
-
-          data.map(
-              function (dataItem) {
-                  localStorage.setItem('all-columns', JSON.stringify( dataItem));
-              }
-          );*/
-
-        var allColumnsLSKeys = localStorage.getItem('all-columns');
-
-        /* var dataToAllColumns =  data.filter(function (dataItem) {
-             allColumnsLSKeys.map(function (allColumnsitem) {
-                       console.log(localStorage.getItem(allColumnsitem));
-                  })
-              }
-          )*/
-
-
-        // var selectedColumnsLS = localStorage.getItem('all-columns');
-        // console.log("ColumnSelectorController inited", allColumnsLS,selectedColumnsLS )
     },
+
     selectedColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('remove-button')) {
-            var selectedColumnsStore = Ext.getStore('SelectedColumnsStore'),
-                availableColumnsStore = Ext.getStore('AvailableColumnsStore');
-
-            selectedColumnsStore.remove(record);
-            availableColumnsStore.filter();
+            Ext.getStore('SelectedStore').remove(record);
+            this.updateAvailableColumnsStore();
         }
-
     },
 
     availableColumnsClick: function (thisThis, record, item, index, e) {
         if (e.target.classList.contains('add-button')) {
-
-            console.log('record-> ', record);
-            var selectedColumnsStore = Ext.getStore('SelectedColumnsStore'),
-                availableColumnsStore = Ext.getStore('AvailableColumnsStore');
-            console.log('availableColumnsClick record',record);
-          // delete record.data.uid;
-            selectedColumnsStore.add(record.data);
-           // selectedColumnsStore.save();
-
-            availableColumnsStore.filter();
+            Ext.getStore('SelectedStore').add(record);
+            this.updateAvailableColumnsStore();
         }
     },
-    searchFieldChange: function (my, newValue, oldValue) {
-        var availableColumnsStore = Ext.getStore('AvailableColumnsStore');
-        availableColumnsStore.searchQuery = newValue;
-        availableColumnsStore.filter();
 
+    searchFieldChange: function (searchField, newValue) {
+        Ext.getStore('AvailableStore').updateSearchFilterQuery(newValue);
+    },
+
+    updateAvailableColumnsStore: function () {
+        Ext.getStore('AvailableStore').filter();
     }
 });

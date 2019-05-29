@@ -9,4 +9,3 @@ Ext.define('tableWieveExtJs.view.HeaderView', {
         itemId: 'configureColumns'
     }]
 });
-

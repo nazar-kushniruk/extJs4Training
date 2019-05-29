@@ -1,14 +1,37 @@
 Ext.define('tableWieveExtJs.view.GridView', {
     alias: ['widget.usergrid'],
+    id: 'usergridId',
     extend: 'Ext.grid.Panel',
     title: 'Users',
     store: 'TableStore',
-    columns: [
-        { text: 'Id',  dataIndex: 'id',  flex: 1 },
-        { text: 'Name',  dataIndex: 'name',  flex: 1 },
-        { text: 'UserName',  dataIndex: 'username',  flex: 1 },
-        { text: 'Email', dataIndex: 'email', flex: 1 },
-        { text: 'Phone', dataIndex: 'phone', flex: 1 },
-        { text: 'Website', dataIndex: 'website', flex: 1 }
-    ]
+    initComponent: function () {
+        Ext.apply(this, {
+            columns: this.getColumnsConfiguration()
+        });
+
+        this.callParent(arguments);
+    },
+
+    updateGridColumns() {
+        var me = this;
+
+        me.headerCt.removeAll();
+        me.getColumnsConfiguration().forEach(function (item , index) {
+                me.headerCt.insert(index, Ext.create('Ext.grid.column.Column', item));
+            }
+        );
+        me.getView().refresh();
+    },
+
+    getColumnsConfiguration() {
+        var data = Ext.getStore('AllColumnsStore').getSelectedColumnForGrid();
+
+        return data.map(function (item) {
+            return {
+                text: item.name,
+                dataIndex: item.name,
+                flex: 1
+            };
+        });
+    }
 });

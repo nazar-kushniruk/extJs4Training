@@ -1,35 +1,52 @@
 Ext.define('tableWieveExtJs.controller.TableController', {
-        extend: 'Ext.app.Controller',
-        stores: ['TableStore', 'AllColumnsStore', 'TestStore'],
-        views: [
-            'TableView',
-            'HeaderView',
-            'GridView'
-        ],
-        init() {
-            this.control({
-                '#configureColumns': {
-                    click: this.onConfigureColumnsClick
-                },
-                'userstable': {
-                    beforerender: this.onUserTableRender
-                }
-            });
-        },
+    extend: 'Ext.app.Controller',
+    stores: ['TableStore', 'AllColumnsStore'],
+    views: [
+        'TableView',
+        'HeaderView',
+        'GridView'
+    ],
+    models: ['tableWieveExtJs.model.TableModel'],
 
-        onConfigureColumnsClick: function (button) {
-            var grid = button.up('userstable').down('usergrid');
-            Ext.create('tableWieveExtJs.view.ColumnSelectionWindow', {
-                onSaveCallback: function () {
-                    grid.updateColumns();
+    refs: [
+        {
+            ref: 'userTable',
+            selector: '#usergridId'
+        }
+    ],
+
+    init() {
+        this.listen({
+            store: {
+                '#AllColumnsStore': {
+                    load: this.onAllColumnsStoreLoad
                 }
-            }).show();
-        },
-        onUserTableRender: function (view) {
-           // Ext.getStore('AllColumnsStore').getAllColumns();
-           //  Ext.getStore('SelectedColumnsStore').getSelectedColumns();
-           //  Ext.getStore('SelectedColumnsStore').load();
-            Ext.getStore('AvailableColumnsStore').getData();
+            }
+        });
+        this.control({
+            '#configureColumns': {
+                click: this.onConfigureColumnsClick
+            }
+        });
+
+    },
+
+    onConfigureColumnsClick: function () {
+        var me = this;
+
+        Ext.create('tableWieveExtJs.view.ColumnSelectionWindow', {
+            onSaveCallback: function () {
+                me.getUserTable().updateGridColumns();
+            }
+        });
+    },
+
+    onAllColumnsStoreLoad: function (store, records, successful) {
+        var me = this,
+            grid = me.getUserTable();
+
+        if (successful && grid) {
+            grid.updateGridColumns();
         }
     }
-);
+});

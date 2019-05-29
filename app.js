@@ -1,13 +1,12 @@
 Ext.application({
     name: 'tableWieveExtJs',
+    requires: ['tableWieveExtJs.LocalStorageTools'],
     controllers: ['TableController',
-        'ColumnSelectionController',
+        //'ColumnSelectionController',
         'ColumnSelectionController',
         'ColumnSelectionWindowController'],
-    views: ['ColumnSelectionWindow'],
-    requires: ['tableWieveExtJs.Constants', 'tableWieveExtJs.Functions'],
-    launch: function () {
 
+        launch: function () {
         Ext.create('Ext.container.Viewport', {
             items: [
                 {xtype: "userstable"}

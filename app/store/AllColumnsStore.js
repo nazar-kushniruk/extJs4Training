@@ -3,34 +3,24 @@ Ext.define('tableWieveExtJs.store.AllColumnsStore', {
     storeId: 'AllColumnsStore',
     model: 'tableWieveExtJs.model.ColumnModel',
     autoSync: true,
-    //  data: [],
+    autoLoad:true,
     proxy: {
-        type: "localstorage",
-        id: "add"
+        type: 'ajax',
+        url: "http://www.mocky.io/v2/5cee4dbd30000095786e9a67"
     },
-    autoLoad: true,
-    listeners: {
-        load: function (store, records) {
-            if (!records.length) {
-                store.add
-                (   {id: 1,name: "id"},
-                    {id: 2,name: "name"},
-                    {id: 3,name: "username"},
-                    {id: 4,name: "email"},
-                    {id: 5,name: "phone"},
-                    {id: 6,name: "website"});
-               // store.sync();
-                console.log('AllColumnsStore add')
-            }
-            Ext.getStore('AvailableColumnsStore').getData();
-        }
-    },
+    getSelectedColumnForGrid: function () {
+        var allColumns = this.getRange(),
+            selectedColumnsIds = App.LocalStorageTools.getSelectedColumnsFromLocalStorage();
 
-    getAllColumns: function () {
-        var data = localStorage.getItem('all') || null;
-        if (data) {
-            this.add(JSON.parse(data));
-        }
-        ;
+        return !selectedColumnsIds.length
+            ? allColumns.map(record => record.getData())
+            : selectedColumnsIds.reduce(function (result, id) {
+                var column = allColumns.find(function (record) {
+                    return record.get('id') === id;
+                });
+
+                column && result.push(column.getData());
+                return result;
+            }, []);
     }
 });
